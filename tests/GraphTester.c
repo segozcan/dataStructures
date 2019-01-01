@@ -4,7 +4,7 @@
 
 #include <DataStructures/Graph/Graph.h>
 
-static char *const STR_GRAPH= "LinkedList";
+static char *const STR_GRAPH= "Graph";
 
 void graphTestAll()
 {

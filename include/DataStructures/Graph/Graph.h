@@ -86,7 +86,7 @@ void graphPrint(Graph *self) {
 }
 
 int graphHasVertex(Graph* self, int value){
-
+    return graphVertexFind(self,value) != NULL;
 }
 
 int graphHasEdge(Graph* self, int src, int dest){

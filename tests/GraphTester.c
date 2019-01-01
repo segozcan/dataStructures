@@ -20,5 +20,7 @@ void graphTestAll()
     graphAddEdge(graph,6,3);
     graphAddEdge(graph,0,7);
 
+    assert(graphHasVertex(graph,3));
+
     graphPrint(graph);
 }

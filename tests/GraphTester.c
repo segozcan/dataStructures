@@ -29,6 +29,8 @@ void graphTestAll()
     assert(graphHasEdge(graph, 3, 0)==0);
     assert(graphHasEdge(graph, 0, 1)==1);
     assert(graphHasEdge(graph, 7, 5)==0);
+    LinkedList* orderOfNodes = linkedListNew();
+    graphDepthFirst(6, orderOfNodes);
     graphPrint(graph);
 
     log(STR_GRAPH, "Finished testing graph");

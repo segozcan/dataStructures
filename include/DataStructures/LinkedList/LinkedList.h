@@ -62,6 +62,27 @@ void linkedListAddGeneric(LinkedList *self, void* data) {
     }
 }
 
+int linkedListIndex(LinkedList* self,int  data)
+{
+    if(!self)
+    {
+        errorAndExit("list is null");
+    }
+    int index=-1;
+    LinkedListNode* currentNode=self->head;
+    while(currentNode!=NULL)
+    {
+        if(currentNode->value==data)
+        {
+            index++;
+            break;
+        }
+        index++;
+        currentNode=currentNode->next;
+    }
+
+    return index;
+}
 
 int linkedListGet(LinkedList *self, int index) {
     if (self->size <= index) {

@@ -20,5 +20,4 @@ int main(){
     treeTestAll();
     graphTestAll();
     log(STR_TESTER, "tests are passed");
-
 }

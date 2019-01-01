@@ -16,6 +16,7 @@ typedef struct Graph {
     int size;
 } Graph;
 
+void doGraphDepthFirst(int data, Graph* self, LinkedList* orderOfNodes);
 
 GraphVertex *graphNewVertex(int value);
 
@@ -69,6 +70,7 @@ GraphVertex *graphNewVertex(int value) {
     GraphVertex *vertex = (GraphVertex *) malloc(sizeof(GraphVertex));
     vertex->connectedNodes = linkedListNew();
     vertex->value = value;
+    vertex->visited=0;
     return vertex;
 }
 
@@ -131,7 +133,34 @@ int graphHasEdge(Graph* self, int srcValue, int destValue){
         }
 }
 
-void graphDepthFirst(Graph* self, int (consumer)(int, void*), void* env)
+void graphDepthFirst(int data, Graph* self, LinkedList* orderOfNodes)
 {
+    GraphVertex* vertex = graphVertexFind(self, data);
+    doGraphDepthFirst(vertex, orderOfNodes);
+
+
+}
+
+LinkedList* graphIndexFind(Graph* graph)
+{
+    LinkedList* unvisitedIndex = linkedListNew();
+    LinkedListNode* currentVertex = graph->vertexList->head;
+    while(currentVertex!=NULL)
+    {
+        linkedListAdd(unvisitedIndex, linkedListIndex(graph->vertexList, currentVertex->value));
+        currentVertex=currentVertex->next;
+    }
+    return unvisitedIndex;
+}
+
+void doGraphDepthFirst(Graph* graph, GraphVertex* self,LinkedList* orderOfNodes)
+{
+       if(self->connectedNodes==NULL)
+       {
+           errorAndExit("Given node is not connected to any other node.");
+       }
+       int currentIndex=linkedListIndex(graph->vertexList, self->value);
+       //undone
+
 
 }

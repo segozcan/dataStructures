@@ -4,8 +4,11 @@
 
 #include <DataStructures/Graph/Graph.h>
 
+static char *const STR_GRAPH= "LinkedList";
+
 void graphTestAll()
 {
+    log(STR_GRAPH, "Started testing graph");
     Graph* graph = graphNew();
     graphAddVertex(graph,0);
     graphAddVertex(graph,1);
@@ -22,5 +25,11 @@ void graphTestAll()
 
     assert(graphHasVertex(graph,3));
 
+    assert(graphHasEdge(graph, 3, 5)==1);
+    assert(graphHasEdge(graph, 3, 0)==0);
+    assert(graphHasEdge(graph, 0, 1)==1);
+    assert(graphHasEdge(graph, 7, 5)==0);
     graphPrint(graph);
+
+    log(STR_GRAPH, "Finished testing graph");
 }

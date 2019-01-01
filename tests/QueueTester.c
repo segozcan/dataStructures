@@ -41,5 +41,5 @@ void queueTestAll() {
     queueTestDequeue();
     queueTestEmpty();
     queueTestEnqueue();
-    log(STR_QUEUE, "Finished tetsing queue.");
+    log(STR_QUEUE, "Finished testing queue.");
 }

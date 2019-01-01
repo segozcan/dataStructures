@@ -89,6 +89,51 @@ int graphHasVertex(Graph* self, int value){
     return graphVertexFind(self,value) != NULL;
 }
 
-int graphHasEdge(Graph* self, int src, int dest){
+int graphHasEdge(Graph* self, int srcValue, int destValue){
 
+    GraphVertex* source = graphVertexFind(self, srcValue);
+    GraphVertex* destination = graphVertexFind(self, destValue);
+    GraphVertex* referenceVertex=NULL;
+    GraphVertex* comparisonVertex=NULL;
+
+    if(source==NULL||destination==NULL)
+    {
+        errorAndExit("at least one of the values do not exist on graph.");
+    }
+    if(source->connectedNodes->size <= destination->connectedNodes->size)
+    {
+        referenceVertex= source;
+        comparisonVertex=destination;
+    }
+    else
+        {
+        referenceVertex=destination;
+        comparisonVertex=source;
+        }
+
+    int found=0;
+
+    for(int i=0; i<referenceVertex->connectedNodes->size; i++)
+    {
+        int readValue = linkedListGet(referenceVertex->connectedNodes, i);
+
+        if(readValue==comparisonVertex->value)
+        {
+            found=1;
+            break;
+        }
+
+    }
+    if(found==1)
+    {
+        return 1;
+    }else
+        {
+        return 0;
+        }
+}
+
+void graphDepthFirst(Graph* self, int (consumer)(int, void*), void* env)
+{
+    
 }

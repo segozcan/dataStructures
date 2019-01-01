@@ -51,7 +51,9 @@ void testTreeFind()
 
 void treeTestAll()
 {
+    log(STR_TREE, "Started testing tree");
     testTreeInorder();
     testTreeFind();
+    log(STR_TREE, "Finished testing tree");
 }
 

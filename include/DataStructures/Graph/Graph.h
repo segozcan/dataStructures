@@ -40,7 +40,6 @@ void graphAddVertex(Graph *self, int value) {
     GraphVertex *vertex = graphNewVertex(value);
     self->size++;
     linkedListAddGeneric(self->vertexList, (void *) vertex);
-
 }
 
 void graphAddEdge(Graph *self, int srcValue, int destValue) {
@@ -135,5 +134,5 @@ int graphHasEdge(Graph* self, int srcValue, int destValue){
 
 void graphDepthFirst(Graph* self, int (consumer)(int, void*), void* env)
 {
-    
+
 }

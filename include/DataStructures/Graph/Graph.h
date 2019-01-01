@@ -36,7 +36,6 @@ Graph *graphNew() {
 }
 
 void graphAddVertex(Graph *self, int value) {
-
     GraphVertex *vertex = graphNewVertex(value);
     self->size++;
     linkedListAddGeneric(self->vertexList, (void *) vertex);

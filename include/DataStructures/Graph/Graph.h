@@ -6,8 +6,10 @@
 #include <malloc.h>
 
 typedef struct GraphVertex {
+
     int value;
-    LinkedList *connectedNodes;
+    LinkedList *connectedNodes;  //linked list of nodes connected to this node
+    int visited;
 } GraphVertex;
 
 
@@ -16,11 +18,12 @@ typedef struct Graph {
     int size;
 } Graph;
 
-void doGraphDepthFirst(int data, Graph* self, LinkedList* orderOfNodes);
 
 GraphVertex *graphNewVertex(int value);
 
 GraphVertex *graphVertexFind(Graph *self, int value);
+
+void doGraphDepthFirst(Graph* graph, GraphVertex* self, LinkedList* orderOfNodes, int(consumer)(int, LinkedList*));
 
 Graph *graphNew() {
 
@@ -67,10 +70,12 @@ GraphVertex *graphVertexFind(Graph *self, int value) {
 
 
 GraphVertex *graphNewVertex(int value) {
+
     GraphVertex *vertex = (GraphVertex *) malloc(sizeof(GraphVertex));
     vertex->connectedNodes = linkedListNew();
     vertex->value = value;
     vertex->visited=0;
+
     return vertex;
 }
 
@@ -132,11 +137,11 @@ int graphHasEdge(Graph* self, int srcValue, int destValue){
         return 0;
         }
 }
-
-void graphDepthFirst(int data, Graph* self, LinkedList* orderOfNodes)
+/*
+void graphDepthFirst(int data, Graph* self, LinkedList* orderOfNodes, int(consumer)(int, LinkedList*))
 {
     GraphVertex* vertex = graphVertexFind(self, data);
-    doGraphDepthFirst(vertex, orderOfNodes);
+    doGraphDepthFirst(self, vertex, orderOfNodes, consumer);
 
 
 }
@@ -153,14 +158,80 @@ LinkedList* graphIndexFind(Graph* graph)
     return unvisitedIndex;
 }
 
-void doGraphDepthFirst(Graph* graph, GraphVertex* self,LinkedList* orderOfNodes)
+void doGraphDepthFirst(Graph* graph, GraphVertex* self, LinkedList* orderOfNodes, int(consumer)(int, LinkedList*))
 {
-       if(self->connectedNodes==NULL)
-       {
-           errorAndExit("Given node is not connected to any other node.");
-       }
-       int currentIndex=linkedListIndex(graph->vertexList, self->value);
-       //undone
+    if(self->connectedNodes==NULL)
+    {
+        errorAndExit("Given node is not connected to any other node.");
+    }
+    LinkedList* unvisitedIndex= graphIndexFind(graph);
 
+    int currentIndex = linkedListIndex(graph->vertexList, self->value);
+    int indexToBeDeleted = linkedListIndex(unvisitedIndex, currentIndex);
+    if(indexToBeDeleted<unvisitedIndex->size)
+    {
+        linkedListAdd(orderOfNodes, self->value);
+        linkedListDelete(unvisitedIndex, indexToBeDeleted);
+        doGraphDepthFirst(graph, self->connectedNodes->tail, orderOfNodes,  consumer);
+    }
 
+}
+*/
+/*void graphDFS(Graph* self, GraphVertex* startVertex, LinkedList* orderOfNodes)
+{
+    LinkedList* unvisited = self->vertexList;
+    if(startVertex->visited==0)
+    {
+        LinkedList* orderOfNodes = linkedListNew();
+        startVertex->visited=1;
+    }
+
+    int nextData = startVertex->connectedNodes->head->value;
+
+    startVertex= graphVertexFind(self, nextData);
+    graphDFS(self, startVertex, orderOfNodes);
+
+}
+*/
+
+void graphDevisit()
+{
+
+}
+
+int graphDFS(Graph* self, int startValue, int findValue)
+{
+    GraphVertex* Vertex = graphVertexFind(self, startValue);
+
+    Vertex->visited=1;
+
+    if(startValue==findValue)
+    {
+
+        return 1;
+    }else
+        {
+        for(int i=0;i<Vertex->connectedNodes->size;i++)
+        {
+
+            LinkedListNode* currentNode = Vertex->connectedNodes->head;
+
+            int value = currentNode->value;
+
+            GraphVertex* currentVertex = graphVertexFind(self, value);
+
+            if(currentVertex->visited==0)
+            {
+                graphDFS(self, value, findValue);
+            }
+
+            currentNode=currentNode->next;
+
+            if(i==Vertex->connectedNodes->size - 1)
+            {
+                return 0;
+            }
+        }
+
+        }
 }

@@ -6,6 +6,7 @@
 
 static char *const STR_GRAPH= "Graph";
 
+
 void graphTestAll()
 {
     log(STR_GRAPH, "Started testing graph");
@@ -22,6 +23,12 @@ void graphTestAll()
     graphAddEdge(graph,3,5);
     graphAddEdge(graph,6,3);
     graphAddEdge(graph,0,7);
+    graphAddEdge(graph,6,7);
+    graphAddEdge(graph,1,5);
+
+    assert(graphDFS(graph,0, 3 )==1);
+
+
 
     assert(graphHasVertex(graph,3));
 
@@ -29,8 +36,8 @@ void graphTestAll()
     assert(graphHasEdge(graph, 3, 0)==0);
     assert(graphHasEdge(graph, 0, 1)==1);
     assert(graphHasEdge(graph, 7, 5)==0);
-    LinkedList* orderOfNodes = linkedListNew();
-    graphDepthFirst(6, orderOfNodes);
+
+
     graphPrint(graph);
 
     log(STR_GRAPH, "Finished testing graph");

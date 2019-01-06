@@ -38,7 +38,6 @@ int queueFront(Queue* self){
     return self->head->value;
 }
 
-
 int queueRear(Queue* self)
 {
     if (self->size < 1) {

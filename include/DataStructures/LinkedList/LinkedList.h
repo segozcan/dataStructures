@@ -37,15 +37,21 @@ LinkedList *linkedListNew() {
 
 void linkedListAdd(LinkedList *self, int data) {
     LinkedListNode *newData = (LinkedListNode *) malloc(sizeof(LinkedListNode));
+
     newData->value = data;
+
     newData->next = NULL;
+
     self->size++;
 
     if (self->tail == NULL) {
         self->tail = self->head = newData;
+
     } else {
         self->tail->next = newData;
+
         self->tail = newData;
+
     }
 }
 void linkedListAddGeneric(LinkedList *self, void* data) {

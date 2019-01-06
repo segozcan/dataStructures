@@ -154,28 +154,39 @@ int graphHasEdge(Graph* self, GraphVertex* source, GraphVertex* destination){
 
 
 
-void graphBreadthFirst(Graph* self, Queue* queue, int* discovered )
+void graphBreadthFirst(Graph* self, GraphVertex* start, Queue* queue)
 {
-    if(queueIsEmpty(queue)==1) {
-
-        errorAndExit("Argument queue is empty");
-    }
-
-    int start = queueFront(queue);
-    queueDequeue(queue);
-    printf("%d ", start);
-
-    for(int u = 0; u < self->vertexList->numberOfOut; u++ )
+    for(int i=0;i<self->numberOfVertices;i++)
     {
-        int a = self->vertexList->outNodes[u].value;
-        if(discovered[a]==0)
-        {
-            discovered[a]==1;
-            queueEnqueue(queue, a);
-        }
+        self->vertexList[i].visited=0;
     }
+    start->visited=1;
+    queueEnqueue(queue, start->value);
+    printf("a ");
 
-    graphBreadthFirst(self, queue , discovered);
+    while(!(queue->head==NULL))
+    {
+        printf(" h");
+        int u = queue->head->value;
+        queueDequeue(queue);
+        printf("%d ", u);
+
+        for(int k=0; k< self->vertexList[u].numberOfOut;k++)
+        {
+            GraphVertex v = self->vertexList[u].outNodes[k];
+            printf("b");
+            GraphVertex* ptr = &v;
+            printf("c");
+            if(ptr->visited==0)
+            {
+                printf("d");
+                queueEnqueue(queue, ptr->value);
+                printf("r");
+                ptr->visited=1;
+            }
+        }
+
+    }
 }
 
 

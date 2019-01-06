@@ -70,6 +70,9 @@ void graphTestAll()
     graphAddVertex(self);
     graphAddVertex(self);
     graphAddVertex(self);
+    graphAddVertex(self);
+    graphAddVertex(self);
+    graphAddVertex(self);
 
 
     graphAddEdge(self, &self->vertexList[2], &self->vertexList[3],4);
@@ -81,9 +84,18 @@ void graphTestAll()
     graphAddEdge(self, &self->vertexList[1], &self->vertexList[2], 3);
     graphAddEdge(self, &self->vertexList[0], &self->vertexList[2], 8);
     graphAddEdge(self, &self->vertexList[1], &self->vertexList[0], 9);
+    graphAddEdge(self, &self->vertexList[5], &self->vertexList[4], 2);
+    graphAddEdge(self, &self->vertexList[6], &self->vertexList[5], 1);
+    graphAddEdge(self, &self->vertexList[1], &self->vertexList[6], 7);
+    graphAddEdge(self, &self->vertexList[2], &self->vertexList[4], 12);
+    graphAddEdge(self, &self->vertexList[5], &self->vertexList[3], 6);
+    graphAddEdge(self, &self->vertexList[4], &self->vertexList[1], 3);
+    graphAddEdge(self, &self->vertexList[2], &self->vertexList[6], 6);
+    graphAddEdge(self, &self->vertexList[1], &self->vertexList[4], 20);
+
 
     assert(graphHasVertex(self,2)==1);
-    assert(graphHasVertex(self,4)==0);
+    assert(graphHasVertex(self,4)==1);
     assert(graphHasVertex(self,3)==1);
 
     assert(graphHasEdge(self, &self->vertexList[0], &self->vertexList[1])== 0);
@@ -95,24 +107,9 @@ void graphTestAll()
 
     graphPrint(self);
 
-    int* discovered;
-    discovered = (int*)malloc(self->numberOfVertices *sizeof(int));
-
-    for(int k=0; k<self->numberOfVertices;k++)
-    {
-        discovered[k]=0;
-    }
-
     Queue* queue = queueCreate();
 
-    for(int i=0; i<self->numberOfVertices; i++)
-    {
-        discovered[i]=1;
-        queueEnqueue(queue, i);
-
-        graphBreadthFirst(self, queue, discovered);
-    }
-
+    graphBreadthFirst(self, &self->vertexList[3], queue);
 
 
     log(STR_GRAPH, "Finished testing graph");

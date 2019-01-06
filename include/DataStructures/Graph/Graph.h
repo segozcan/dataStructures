@@ -3,19 +3,28 @@
 //
 
 #include <DataStructures/LinkedList/LinkedList.h>
-#include <malloc.h>
+
+
 
 typedef struct GraphVertex {
 
-    int value;
-    LinkedList *connectedNodes;  //linked list of nodes connected to this node
+    int value; // actually, index
+    GraphVertex *inNodes;
+    GraphVertex* outNodes;
     int visited;
 } GraphVertex;
 
+typedef struct GraphEdge
+{
+    GraphVertex* startVertex;
+    GraphVertex* endVertex;
+    int weight;
+}Edge;
 
 typedef struct Graph {
-    LinkedList *vertexList;
-    int size;
+    GraphVertex* vertexList;
+    GraphEdge* edgeList;
+    int numberOfVertices;
 } Graph;
 
 
@@ -33,110 +42,101 @@ Graph *graphNew() {
         errorAndExit("Malloc returned null");
     }
 
-    graph->vertexList = linkedListNew();
+    graph->vertexList = (GraphVertex*)malloc(sizeof(GraphVertex));
+    graph->edgeList = (GraphEdge*)malloc(sizeof(GraphEdge));
+    graph->numberOfVertices = 0;
 
 
     return graph;
 }
 
-void graphAddVertex(Graph *self, int value) {
-    GraphVertex *vertex = graphNewVertex(value);
-    self->size++;
-    linkedListAddGeneric(self->vertexList, (void *) vertex);
+void graphAddVertex(Graph *self) {
+
+    GraphVertex* vertex = (GraphVertex*)malloc(sizeof(GraphVertex));
+
+    vertex->value = sizeof(self->vertexList);
+    vertex->inNodes = (GraphVertex*)malloc(sizeof(GraphVertex));
+    vertex->outNodes = (GraphVertex*)malloc(sizeof(GraphVertex));
+
+    self->vertexList = (GraphVertex*)realloc(self->vertexList, sizeof(self->vertexList) +1);
+    self->numberOfVertices++;
+    self->vertexList[sizeof(self->vertexList) - 1] = *vertex;
+
+
 }
 
-void graphAddEdge(Graph *self, int srcValue, int destValue) {
-    GraphVertex *srcVertex = graphVertexFind(self, srcValue);
-    GraphVertex *destVertex = graphVertexFind(self, destValue);
-    if (!srcVertex) {
-        errorAndExit("srcValue vertex was null");
+void graphAddEdge(Graph *self, GraphVertex* source, GraphVertex* destination, int weight) {
+
+    if( self == NULL || source == NULL || destination == NULL)
+    {
+        errorAndExit("at least one of the arguments were null.");
     }
-    if (!destVertex) {
-        errorAndExit("destValue vertex was null");
-    }
-    linkedListAdd(srcVertex->connectedNodes, destVertex->value);
-    linkedListAdd(destVertex->connectedNodes, srcVertex->value);
+
+    GraphEdge* edge = (GraphEdge*)malloc(sizeof(GraphEdge));
+
+    edge->weight = weight;
+    edge->startVertex = source;
+    edge->endVertex = destination;
+
+    self->edgeList = (GraphEdge*)realloc(self->edgeList, sizeof(self->edgeList) +1);
+    self->edgeList[sizeof(self->edgeList)-1] = *edge;
+
+    source->outNodes = (GraphVertex*)realloc(source->outNodes, sizeof(source->outNodes) +1);
+    source->outNodes[sizeof(source->outNodes) -1] = *destination;
+
+    destination->inNodes = (GraphVertex*)realloc(destination->inNodes, sizeof(destination->inNodes) +1);
+    destination->inNodes[sizeof(destination->inNodes) -1] = *source;
+
 }
 
-GraphVertex *graphVertexFind(Graph *self, int value) {
-    for (int i = 0; i < self->vertexList->size; i++) {
-        GraphVertex *vertex = (GraphVertex *) linkedListGetGeneric(self->vertexList, i);
-        if (vertex->value == value) {
-            return vertex;
-        }
-    }
-    return NULL;
-}
-
-
-GraphVertex *graphNewVertex(int value) {
-
-    GraphVertex *vertex = (GraphVertex *) malloc(sizeof(GraphVertex));
-    vertex->connectedNodes = linkedListNew();
-    vertex->value = value;
-    vertex->visited=0;
-
-    return vertex;
-}
 
 void graphPrint(Graph *self) {
-    for (int i = 0; i < self->vertexList->size; i++) {
-        GraphVertex *vertex = (GraphVertex *) linkedListGetGeneric(self->vertexList, i);
-        printf("[%d]:", vertex->value);
-        for (int j = 0; j < vertex->connectedNodes->size; j++) {
-            printf(" %d ", linkedListGet(vertex->connectedNodes, j));
+
+    for(int i=0;i<sizeof(self->vertexList); i++)
+    {
+        printf("[%d] out nodes : ", self->vertexList[i]);
+        for(int k=0; k<sizeof(self->vertexList[i].outNodes);k++)
+        {
+            printf("%d ", self->vertexList[i].outNodes[i].value);
         }
         printf("\n");
     }
 }
 
-int graphHasVertex(Graph* self, int value){
-    return graphVertexFind(self,value) != NULL;
+void graphEdgeDelete(Graph* self, GraphVertex* sourceVertex, GraphVertex* destinationVertex)
+{
+    GraphVertex* ptrOut = &sourceVertex->outNodes[sizeof(sourceVertex->outNodes)-1];
+    ptrOut = NULL;
+
+    GraphVertex* ptrIn = &destinationVertex->inNodes[sizeof(destinationVertex->inNodes)-1];
+    ptrOut = NULL;
+
 }
 
-int graphHasEdge(Graph* self, int srcValue, int destValue){
+int graphHasVertex(Graph* self, int value){
 
-    GraphVertex* source = graphVertexFind(self, srcValue);
-    GraphVertex* destination = graphVertexFind(self, destValue);
-    GraphVertex* referenceVertex=NULL;
-    GraphVertex* comparisonVertex=NULL;
+    if(value <0 )
+    {
+        errorAndExit("index out of bounds");
+    }
+    return value < sizeof(self->vertexList) ? 1 : 0;
+}
 
-    if(source==NULL||destination==NULL)
-    {
-        errorAndExit("at least one of the values do not exist on graph.");
-    }
-    if(source->connectedNodes->size <= destination->connectedNodes->size)
-    {
-        referenceVertex= source;
-        comparisonVertex=destination;
-    }
-    else
-        {
-        referenceVertex=destination;
-        comparisonVertex=source;
-        }
+int graphHasEdge(Graph* self, GraphVertex* source, GraphVertex* destination){
 
     int found=0;
-
-    for(int i=0; i<referenceVertex->connectedNodes->size; i++)
+    for(int i=0; i<sizeof(source->outNodes) ; i++)
     {
-        int readValue = linkedListGet(referenceVertex->connectedNodes, i);
-
-        if(readValue==comparisonVertex->value)
+        if(source->outNodes[i].value == destination->value)
         {
-            found=1;
+            found==1;
             break;
         }
-
     }
-    if(found==1)
-    {
-        return 1;
-    }else
-        {
-        return 0;
-        }
+    return found;
 }
+
+
 /*
 void graphDepthFirst(int data, Graph* self, LinkedList* orderOfNodes, int(consumer)(int, LinkedList*))
 {
@@ -193,7 +193,7 @@ void doGraphDepthFirst(Graph* graph, GraphVertex* self, LinkedList* orderOfNodes
 
 }
 */
-
+/*
 void graphDevisit()
 {
 
@@ -235,3 +235,108 @@ int graphDFS(Graph* self, int startValue, int findValue)
 
         }
 }
+
+*/
+/*
+typedef struct AdjacencyListNode
+{
+    int dest;
+    AdjacencyListNode* next;
+};
+
+typedef struct AdjacencyList
+{
+    AdjacencyListNode* head;
+
+};
+
+typedef struct Edge
+{
+    AdjacencyListNode* startVertex;
+    AdjacencyListNode* endVertex;
+    int weight;
+
+};
+
+typedef struct EdgeList
+{
+    Edge* head;
+};
+
+typedef struct Graph
+{
+    int numberOfVertices;
+    AdjacencyList* adjArr;
+    EdgeList* edgeArr;
+};
+
+AdjacencyListNode* graphNewAdjNode(int dest)
+{
+    AdjacencyListNode* newAdjNode = (AdjacencyListNode*)malloc(sizeof(AdjacencyListNode));
+    newAdjNode->dest=dest;
+    newAdjNode->next=NULL;
+
+    return newAdjNode;
+}
+
+Edge* graphNewUndirectedEdge(Graph* self, int source, int destination, int  weight)
+{
+    Edge* edge = (Edge*)malloc(sizeof(Edge));
+    edge->weight = weight;
+
+    AdjacencyListNode* startVertex =  self->adjArr[source];
+
+    edge->endVertex = self->adjArr[source];
+    edge->startVertex = self->adjArr[destination];
+
+
+
+}
+
+Graph* graphNew(int numberOfVertices)
+{
+    //Creates an array for each vertex.
+
+    Graph * graph = (Graph*)malloc(sizeof(Graph));
+    graph->numberOfVertices=numberOfVertices;
+    graph->adjArr= (AdjacencyList*)malloc(numberOfVertices* sizeof(AdjacencyList));
+    graph->edgeArr=(EdgeList*)malloc(sizeof(EdgeList));
+}
+
+void graphAddUndirectedEdge(Graph* self, int source, int destination, int  weight)
+{
+
+}
+
+void graphAddDirectedEdge(Graph* self, int source, int destination)
+{
+    //Adds an edge only from the source to the destination.
+
+    AdjacencyListNode* newNode = graphNewAdjNode(destination);
+    newNode->next = self->adjArr[source].head;
+    self->adjArr[source].head=newNode;
+
+}
+
+int graphHasEdge(Graph* self, int source, int destination)
+{
+
+    AdjacencyList listToBeChecked  = self->adjArr[source];
+    AdjacencyList* addressOfList = &listToBeChecked;
+
+    int i=0;
+    while(addressOfList + i !=NULL)
+    {
+        AdjacencyListNode* currentNode = addressOfList->head;
+        if(currentNode->dest==destination)
+        {
+            return 1;
+        }
+        currentNode = currentNode->next;
+        i++;
+
+    }
+
+}
+*/
+

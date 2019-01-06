@@ -1,7 +1,8 @@
 //
 // Created by ezgi on 29.12.2018.
 //
-#include <DataStructures/Tree/Tree.h>
+#include </home/ezgi/CLionProjects/RAS111/include/DataStructures/Tree/Tree.h>
+
 
 static char *const STR_TREE = "Tree";
 

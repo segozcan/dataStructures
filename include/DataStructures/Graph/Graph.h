@@ -84,24 +84,22 @@ void graphAddEdge(Graph *self, GraphVertex* source, GraphVertex* destination, in
     edge->endVertex = destination;
 
     self->edgeList = (GraphEdge*)realloc(self->edgeList, sizeof(GraphEdge) * (self->numberOfEdges +1));
-    printf("1");
+
     self->edgeList[self->numberOfEdges] = *edge;
-    printf("5");
+
     self->numberOfEdges++;
-    printf("2");
+
     source->outNodes = (GraphVertex*)realloc(source->outNodes, sizeof(GraphVertex)* (source->numberOfOut +1));
-    printf("3");
+
     source->numberOfOut++;
-    printf("6");
+
     source->outNodes[source->numberOfOut-1] = *destination;
-    printf("4");
+
     destination->inNodes = (GraphVertex*)realloc(destination->inNodes, sizeof(GraphVertex) * (destination->numberOfIn + 1));
-    printf("5");
+
     destination->numberOfIn++;
-    printf("7");
+
     destination->inNodes[destination->numberOfIn-1] = *source;
-    printf("6");
-    printf("\n");
 
 }
 
@@ -156,22 +154,29 @@ int graphHasEdge(Graph* self, GraphVertex* source, GraphVertex* destination){
 
 
 
-/*void graphBreadthFirst(Graph* self, GraphVertex* source)
+void graphBreadthFirst(Graph* self, Queue* queue, int* discovered )
 {
-    GraphVertex* listOfVertices = self->vertexList;
-    int startIndex = source->value;
+    if(queueIsEmpty(queue)==1) {
 
-    for(int i=0; i<sizeof(listOfVertices); i++)
-    {
-        listOfVertices[i].visited=0;
+        errorAndExit("Argument queue is empty");
     }
 
-    listOfVertices[startIndex].visited = 1;
-    queueEnqueue()
+    int start = queueFront(queue);
+    queueDequeue(queue);
+    printf("%d ", start);
 
+    for(int u = 0; u < self->vertexList->numberOfOut; u++ )
+    {
+        int a = self->vertexList->outNodes[u].value;
+        if(discovered[a]==0)
+        {
+            discovered[a]==1;
+            queueEnqueue(queue, a);
+        }
+    }
 
-
-}*/
+    graphBreadthFirst(self, queue , discovered);
+}
 
 
 

@@ -3,6 +3,7 @@
 //
 
 #include <DataStructures/LinkedList/LinkedList.h>
+#include <DataStructures/Queue/Queue.h>
 
 
 
@@ -12,6 +13,8 @@ typedef struct GraphVertex {
     GraphVertex *inNodes;
     GraphVertex* outNodes;
     int visited;
+    int numberOfOut;
+    int numberOfIn;
 } GraphVertex;
 
 typedef struct GraphEdge
@@ -25,6 +28,7 @@ typedef struct Graph {
     GraphVertex* vertexList;
     GraphEdge* edgeList;
     int numberOfVertices;
+    int numberOfEdges;
 } Graph;
 
 
@@ -45,6 +49,7 @@ Graph *graphNew() {
     graph->vertexList = (GraphVertex*)malloc(sizeof(GraphVertex));
     graph->edgeList = (GraphEdge*)malloc(sizeof(GraphEdge));
     graph->numberOfVertices = 0;
+    graph->numberOfEdges = 0;
 
 
     return graph;
@@ -54,15 +59,15 @@ void graphAddVertex(Graph *self) {
 
     GraphVertex* vertex = (GraphVertex*)malloc(sizeof(GraphVertex));
 
-    vertex->value = sizeof(self->vertexList);
+    vertex->value = self->numberOfVertices;
     vertex->inNodes = (GraphVertex*)malloc(sizeof(GraphVertex));
     vertex->outNodes = (GraphVertex*)malloc(sizeof(GraphVertex));
+    vertex->numberOfIn = 0;
+    vertex->numberOfOut = 0;
 
-    self->vertexList = (GraphVertex*)realloc(self->vertexList, sizeof(self->vertexList) +1);
+    self->vertexList = (GraphVertex*)realloc(self->vertexList, sizeof(GraphVertex) * (self->numberOfVertices +1) );
     self->numberOfVertices++;
-    self->vertexList[sizeof(self->vertexList) - 1] = *vertex;
-
-
+    self->vertexList[self->numberOfVertices -1] = *vertex;
 }
 
 void graphAddEdge(Graph *self, GraphVertex* source, GraphVertex* destination, int weight) {
@@ -78,14 +83,25 @@ void graphAddEdge(Graph *self, GraphVertex* source, GraphVertex* destination, in
     edge->startVertex = source;
     edge->endVertex = destination;
 
-    self->edgeList = (GraphEdge*)realloc(self->edgeList, sizeof(self->edgeList) +1);
-    self->edgeList[sizeof(self->edgeList)-1] = *edge;
-
-    source->outNodes = (GraphVertex*)realloc(source->outNodes, sizeof(source->outNodes) +1);
-    source->outNodes[sizeof(source->outNodes) -1] = *destination;
-
-    destination->inNodes = (GraphVertex*)realloc(destination->inNodes, sizeof(destination->inNodes) +1);
-    destination->inNodes[sizeof(destination->inNodes) -1] = *source;
+    self->edgeList = (GraphEdge*)realloc(self->edgeList, sizeof(GraphEdge) * (self->numberOfEdges +1));
+    printf("1");
+    self->edgeList[self->numberOfEdges] = *edge;
+    printf("5");
+    self->numberOfEdges++;
+    printf("2");
+    source->outNodes = (GraphVertex*)realloc(source->outNodes, sizeof(GraphVertex)* (source->numberOfOut +1));
+    printf("3");
+    source->numberOfOut++;
+    printf("6");
+    source->outNodes[source->numberOfOut-1] = *destination;
+    printf("4");
+    destination->inNodes = (GraphVertex*)realloc(destination->inNodes, sizeof(GraphVertex) * (destination->numberOfIn + 1));
+    printf("5");
+    destination->numberOfIn++;
+    printf("7");
+    destination->inNodes[destination->numberOfIn-1] = *source;
+    printf("6");
+    printf("\n");
 
 }
 
@@ -119,13 +135,13 @@ int graphHasVertex(Graph* self, int value){
     {
         errorAndExit("index out of bounds");
     }
-    return value < sizeof(self->vertexList) ? 1 : 0;
+    return value < self->numberOfVertices ? 1 : 0;
 }
 
 int graphHasEdge(Graph* self, GraphVertex* source, GraphVertex* destination){
 
     int found=0;
-    for(int i=0; i<sizeof(source->outNodes) ; i++)
+    for(int i=0; i<source->numberOfOut ; i++)
     {
         if(source->outNodes[i].value == destination->value)
         {
@@ -135,6 +151,27 @@ int graphHasEdge(Graph* self, GraphVertex* source, GraphVertex* destination){
     }
     return found;
 }
+
+
+
+/*void graphBreadthFirst(Graph* self, GraphVertex* source)
+{
+    GraphVertex* listOfVertices = self->vertexList;
+    int startIndex = source->value;
+
+    for(int i=0; i<sizeof(listOfVertices); i++)
+    {
+        listOfVertices[i].visited=0;
+    }
+
+    listOfVertices[startIndex].visited = 1;
+    queueEnqueue()
+
+
+
+}*/
+
+
 
 
 /*

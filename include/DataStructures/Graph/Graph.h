@@ -141,11 +141,12 @@ int graphHasVertex(Graph* self, int value){
 int graphHasEdge(Graph* self, GraphVertex* source, GraphVertex* destination){
 
     int found=0;
-    for(int i=0; i<source->numberOfOut ; i++)
+    int i = 0;
+    for(i; i<source->numberOfOut ; i++)
     {
         if(source->outNodes[i].value == destination->value)
         {
-            found==1;
+            found=1;
             break;
         }
     }

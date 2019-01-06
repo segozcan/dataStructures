@@ -108,12 +108,13 @@ void graphAddEdge(Graph *self, GraphVertex* source, GraphVertex* destination, in
 
 void graphPrint(Graph *self) {
 
-    for(int i=0;i<sizeof(self->vertexList); i++)
+    for(int i=0;i<self->numberOfVertices; i++)
     {
-        printf("[%d] out nodes : ", self->vertexList[i]);
-        for(int k=0; k<sizeof(self->vertexList[i].outNodes);k++)
+        printf("[%d] out nodes : ", self->vertexList[i].value);
+        for(int k=0; k<self->vertexList[i].numberOfOut;k++)
         {
-            printf("%d ", self->vertexList[i].outNodes[i].value);
+            printf(" Node->%d ", self->vertexList[i].outNodes[k].value);
+
         }
         printf("\n");
     }
@@ -121,12 +122,11 @@ void graphPrint(Graph *self) {
 
 void graphEdgeDelete(Graph* self, GraphVertex* sourceVertex, GraphVertex* destinationVertex)
 {
-    GraphVertex* ptrOut = &sourceVertex->outNodes[sizeof(sourceVertex->outNodes)-1];
+    GraphVertex* ptrOut = &sourceVertex->outNodes[sourceVertex->numberOfOut-1];
     ptrOut = NULL;
 
-    GraphVertex* ptrIn = &destinationVertex->inNodes[sizeof(destinationVertex->inNodes)-1];
+    GraphVertex* ptrIn = &destinationVertex->inNodes[destinationVertex->numberOfIn-1];
     ptrOut = NULL;
-
 }
 
 int graphHasVertex(Graph* self, int value){
@@ -152,6 +152,7 @@ int graphHasEdge(Graph* self, GraphVertex* source, GraphVertex* destination){
     }
     return found;
 }
+
 
 
 

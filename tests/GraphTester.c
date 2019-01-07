@@ -4,7 +4,7 @@
 
 #include <DataStructures/Graph/Graph.h>
 
-static char *const STR_GRAPH= "Graph";
+static char *const STR_GRAPH = "Graph";
 
 
 void graphTestAll()
@@ -110,6 +110,8 @@ void graphTestAll()
     Queue* queue = queueCreate();
 
     graphBreadthFirst(self, &self->vertexList[3], queue);
+
+    graphDepthFirst(self, &self->vertexList[4]);
 
 
     log(STR_GRAPH, "Finished testing graph");

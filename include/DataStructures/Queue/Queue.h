@@ -26,6 +26,7 @@ Queue *queueDequeue(Queue *self) {
     if (self->size < 1) {
         errorAndExit("queue was empty");
     }
+
     self->head = self->head->next;
     self->size--;
     return self;

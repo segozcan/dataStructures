@@ -36,7 +36,7 @@ GraphVertex *graphNewVertex(int value);
 
 GraphVertex *graphVertexFind(Graph *self, int value);
 
-void doGraphDepthFirst(Graph* graph, GraphVertex* self, LinkedList* orderOfNodes, int(consumer)(int, LinkedList*));
+void grapDFSVisit(Graph* self, GraphVertex* vertex);
 
 Graph *graphNew() {
 
@@ -152,7 +152,22 @@ int graphHasEdge(Graph* self, GraphVertex* source, GraphVertex* destination){
 }
 
 
-
+void graphQueueDequeue(Queue* self)
+{
+    if(self->size<1)
+    {
+        errorAndExit("Queue was empty.");
+    }
+    if(self->size==1)
+    {
+        self->head=self->tail=NULL;
+    }
+    else
+        {
+        self->head=self->head->next;
+        }
+    self->size--;
+}
 
 void graphBreadthFirst(Graph* self, GraphVertex* start, Queue* queue)
 {
@@ -162,30 +177,61 @@ void graphBreadthFirst(Graph* self, GraphVertex* start, Queue* queue)
     }
     start->visited=1;
     queueEnqueue(queue, start->value);
-    printf("a ");
+    printf("Enqueued startVertex's value. \n");
 
-    while(!(queue->head==NULL))
+    while(queue->head != NULL)
     {
-        printf(" h");
+        printf("Entered while loop. \n");
         int u = queue->head->value;
         queueDequeue(queue);
-        printf("%d ", u);
+        printf("The value of dequeued vertex is %d.\n", u);
 
         for(int k=0; k< self->vertexList[u].numberOfOut;k++)
         {
             GraphVertex v = self->vertexList[u].outNodes[k];
-            printf("b");
+            printf("Got an adjacent node of queue's head.\n");
             GraphVertex* ptr = &v;
-            printf("c");
+            printf("Assigned a pointer to the node.\n");
             if(ptr->visited==0)
             {
-                printf("d");
+                printf("Pointer's visited value was 0;thus, code entered if.\n");
                 queueEnqueue(queue, ptr->value);
-                printf("r");
+                printf("Pointer's value is enqueued to the queue.\n");
                 ptr->visited=1;
             }
         }
 
+    }
+}
+
+void grapDFSVisit(Graph* self, GraphVertex* vertex)
+{
+    for(int i=0; i<vertex->numberOfOut;i++)
+    {
+        if(vertex->outNodes[i].visited==0)
+        {
+            GraphVertex* newVertex = &vertex->outNodes[i];
+            grapDFSVisit(self, newVertex );
+        }
+    }
+    vertex->visited=1;
+    printf("%d ", vertex->value);
+}
+
+void graphDepthFirst(Graph* self, GraphVertex* start)
+{
+    for(int i=0; i<self->numberOfVertices; i++)
+    {
+        self->vertexList[i].visited=0;
+    }
+
+    for(int k=0; k< start->numberOfOut; k++)
+    {
+        if(start->outNodes[k].visited==0)
+        {
+            GraphVertex* vertex = &start->outNodes[k];
+            grapDFSVisit(self, vertex);
+        }
     }
 }
 
